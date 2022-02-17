@@ -61,13 +61,12 @@ var moon = new THREE.Mesh(
   })
 )
 
+moon.position.set(10,10,10);
+
 // EARTH
 var earthTexture = new THREE.TextureLoader().load(IMGPATH + 'earth.jpg');
 var earthBumpTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-bump.jpg');
 var earthSpecTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-specular.jpg');
-
-var earthCloudsTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-clouds.jpg');
-var earthCloudsMaterial = new THREE.MeshDepthMaterial({map: earthCloudsTexture});
 
 var earth = new THREE.Mesh(
   new THREE.SphereGeometry(4, SEGMENTSIZE, SEGMENTSIZE),
@@ -80,9 +79,16 @@ var earth = new THREE.Mesh(
   })
 )
 
-moon.position.set(10,10,10);
+var cloudsTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-clouds.png');
+var clouds = new THREE.Mesh(
+  new THREE.SphereGeometry(4.02, SEGMENTSIZE, SEGMENTSIZE),
+  new THREE.MeshPhongMaterial({
+    map: cloudsTexture,
+    transparent: true
+  })
+);
 
-scene.add(space, moon, earth);
+scene.add(space, moon, earth, clouds);
 
 
 
@@ -145,6 +151,7 @@ function animate() {
 
   moon.rotation.y += 0.001;
   earth.rotation.y += 0.001;
+  clouds.rotation.y += 0.0005;
 
   // allow to update perspective control
   controls.update();
