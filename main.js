@@ -37,6 +37,17 @@ renderer.render(scene, camera);
 
 // scene.add(torus);
 
+// SPACE
+var spaceTexture = new THREE.TextureLoader().load(IMGPATH + 'milky-way.jpg');
+
+var space = new THREE.Mesh(
+  new THREE.SphereGeometry(90, SEGMENTSIZE, SEGMENTSIZE), 
+  new THREE.MeshStandardMaterial({
+    map: spaceTexture,
+    side: THREE.DoubleSide
+  })
+);
+
 // MOON
 var moonTexture = new THREE.TextureLoader().load(IMGPATH + 'moon.jpg');
 // depth
@@ -66,7 +77,7 @@ var earth = new THREE.Mesh(
 
 moon.position.set(10,10,10);
 
-scene.add(moon, earth);
+scene.add(space, moon, earth);
 
 
 
@@ -83,7 +94,7 @@ scene.add(pointLight, ambientLight);
 var lightHelper = new THREE.PointLightHelper(pointLight);
 // grid for 3d perspective
 var gridHelper = new THREE.GridHelper(200,50);
-// scene.add(lightHelper, gridHelp);
+// scene.add(lightHelper, gridHelper);
 
 // listen to dom events on the mouse and update camera position
 var controls = new OrbitControls(camera, renderer.domElement);
@@ -91,7 +102,7 @@ var controls = new OrbitControls(camera, renderer.domElement);
 
 
 function addStar() {
-  var geometry = new THREE.SphereGeometry(0.25, 24, 24);
+  var geometry = new THREE.SphereGeometry(0.1, 24, 24);
   var material = new THREE.MeshStandardMaterial({color:0xffffff});
   var star = new THREE.Mesh(geometry, material);
 
@@ -109,8 +120,8 @@ for (let i=0; i<50; i++) {
 
 
 // can pass callback function if alot to load
-var spaceTexture = new THREE.TextureLoader().load(IMGPATH + 'space.jpg');
-scene.background = spaceTexture;
+// var spaceTexture = new THREE.TextureLoader().load(IMGPATH + 'space.jpg');
+// scene.background = spaceTexture;
 
 
 
