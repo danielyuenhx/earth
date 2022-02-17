@@ -24,7 +24,7 @@ camera.position.setZ(30);
 renderer.render(scene, camera);
 
 
-
+// TORUS
 // geometry can have many default shapes
 const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
 // material is material of geometry
@@ -33,7 +33,23 @@ const material = new THREE.MeshStandardMaterial({color: 0xF2792F});
 // mesh combines both geometry and material
 const torus = new THREE.Mesh(geometry, material);
 
-scene.add(torus);
+// scene.add(torus);
+
+// MOON
+const moonTexture = new THREE.TextureLoader().load('moon.jpg');
+// depth
+const normalTexture = new THREE.TextureLoader().load('normal.jpg');
+
+const moon = new THREE.Mesh(
+  new THREE.SphereGeometry(3, 64, 64), 
+  new THREE.MeshStandardMaterial({
+    map: moonTexture,
+    normalMap: normalTexture
+  })
+)
+
+scene.add(moon);
+
 
 // like a lightbulb
 const pointLight = new THREE.PointLight(0xffffff);
@@ -47,7 +63,7 @@ scene.add(pointLight, ambientLight);
 const lightHelper = new THREE.PointLightHelper(pointLight);
 // grid for 3d perspective
 const gridHelper = new THREE.GridHelper(200,50);
-// scene.add(lightHelper, gridHelper);
+// scene.add(lightHelper, gridHelp);
 
 // listen to dom events on the mouse and update camera position
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -59,15 +75,19 @@ function addStar() {
   const star = new THREE.Mesh(geometry, material);
 
   // generates number between -100 to 100
-  const [x,y,z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100));
+  const [x,y,z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(150));
 
   star.position.set(x,y,z);
   scene.add(star);
 }
 
-for (let i=0; i<200; i++) {
+for (let i=0; i<100; i++) {
   addStar();
 }
+
+// can pass callback function if alot to load
+const spaceTexture = new THREE.TextureLoader().load('space.jpg');
+scene.background = spaceTexture;
 
 
 // need to render again to see object
@@ -79,9 +99,11 @@ function animate() {
   requestAnimationFrame(animate);
 
   // since its an infinite loop, adding degrees will produce animation
-  torus.rotation.x += 0.01;
-  torus.rotation.y += 0.005;
-  torus.rotation.z += 0.01;
+  // torus.rotation.x += 0.01;
+  // torus.rotation.y += 0.005;
+  // torus.rotation.z += 0.01;
+
+  moon.rotation.y += 0.001;
 
   // allow to update perspective control
   controls.update();
