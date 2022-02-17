@@ -4,16 +4,18 @@ import * as THREE from 'three';
 import { WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
+const IMGPATH = './images/';
+const SEGMENTSIZE = 32;
 
 
 // needs a scene, a camera and a renderer
 // Scene = Container
-const scene = new THREE.Scene();
+var scene = new THREE.Scene();
 
 // Camera = Viewpoint
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
-const renderer = new THREE.WebGLRenderer({
+var renderer = new THREE.WebGLRenderer({
   canvas: document.getElementById('bg'),
 })
 
@@ -24,70 +26,92 @@ camera.position.setZ(30);
 renderer.render(scene, camera);
 
 
-// TORUS
-// geometry can have many default shapes
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-// material is material of geometry
-// MeshBasicMaterial doesnt need light
-const material = new THREE.MeshStandardMaterial({color: 0xF2792F});
-// mesh combines both geometry and material
-const torus = new THREE.Mesh(geometry, material);
+// // TORUS
+// // geometry can have many default shapes
+// var geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+// // material is material of geometry
+// // MeshBasicMaterial doesnt need light
+// var material = new THREE.MeshStandardMaterial({color: 0xF2792F});
+// // mesh combines both geometry and material
+// var torus = new THREE.Mesh(geometry, material);
 
 // scene.add(torus);
 
 // MOON
-const moonTexture = new THREE.TextureLoader().load('moon.jpg');
+var moonTexture = new THREE.TextureLoader().load(IMGPATH + 'moon.jpg');
 // depth
-const normalTexture = new THREE.TextureLoader().load('normal.jpg');
+var moonNormalTexture = new THREE.TextureLoader().load(IMGPATH + 'moon-normal.jpg');
 
-const moon = new THREE.Mesh(
-  new THREE.SphereGeometry(3, 64, 64), 
+var moon = new THREE.Mesh(
+  new THREE.SphereGeometry(1, SEGMENTSIZE, SEGMENTSIZE), 
   new THREE.MeshStandardMaterial({
     map: moonTexture,
-    normalMap: normalTexture
+    normalMap: moonNormalTexture
   })
 )
 
-scene.add(moon);
+// EARTH
+var earthTexture = new THREE.TextureLoader().load(IMGPATH + 'earth.jpg');
+var earthMaterial = new THREE.MeshPhongMaterial({map: earthTexture});
+
+var earthCloudsTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-clouds.jpg');
+var earthCloudsMaterial = new THREE.MeshDepthMaterial({map: earthCloudsTexture});
+
+var earthNormalTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-normal.jpg');
+
+var earth = new THREE.Mesh(
+  new THREE.SphereGeometry(4, SEGMENTSIZE, SEGMENTSIZE),
+  earthMaterial
+)
+
+moon.position.set(10,10,10);
+
+scene.add(moon, earth);
+
+
 
 
 // like a lightbulb
-const pointLight = new THREE.PointLight(0xffffff);
+var pointLight = new THREE.PointLight(0xffffff);
 pointLight.position.set(5,5,5);
 
 // like a floodlight, no need position
-const ambientLight = new THREE.AmbientLight(0xffffff);
+var ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
 
 // helper to show where light is coming from
-const lightHelper = new THREE.PointLightHelper(pointLight);
+var lightHelper = new THREE.PointLightHelper(pointLight);
 // grid for 3d perspective
-const gridHelper = new THREE.GridHelper(200,50);
+var gridHelper = new THREE.GridHelper(200,50);
 // scene.add(lightHelper, gridHelp);
 
 // listen to dom events on the mouse and update camera position
-const controls = new OrbitControls(camera, renderer.domElement);
+var controls = new OrbitControls(camera, renderer.domElement);
+
 
 
 function addStar() {
-  const geometry = new THREE.SphereGeometry(0.25, 24, 24);
-  const material = new THREE.MeshStandardMaterial({color:0xffffff});
-  const star = new THREE.Mesh(geometry, material);
+  var geometry = new THREE.SphereGeometry(0.25, 24, 24);
+  var material = new THREE.MeshStandardMaterial({color:0xffffff});
+  var star = new THREE.Mesh(geometry, material);
 
   // generates number between -100 to 100
-  const [x,y,z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(150));
+  var [x,y,z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(150));
 
   star.position.set(x,y,z);
   scene.add(star);
 }
 
-for (let i=0; i<100; i++) {
+for (let i=0; i<50; i++) {
   addStar();
 }
 
+
+
 // can pass callback function if alot to load
-const spaceTexture = new THREE.TextureLoader().load('space.jpg');
+var spaceTexture = new THREE.TextureLoader().load(IMGPATH + 'space.jpg');
 scene.background = spaceTexture;
+
 
 
 // need to render again to see object
@@ -104,6 +128,7 @@ function animate() {
   // torus.rotation.z += 0.01;
 
   moon.rotation.y += 0.001;
+  earth.rotation.y += 0.001;
 
   // allow to update perspective control
   controls.update();
