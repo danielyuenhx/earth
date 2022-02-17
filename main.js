@@ -7,7 +7,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 const IMGPATH = './images/';
 const SEGMENTSIZE = 32;
 
-
 // needs a scene, a camera and a renderer
 // Scene = Container
 var scene = new THREE.Scene();
@@ -40,8 +39,9 @@ renderer.render(scene, camera);
 // SPACE
 var spaceTexture = new THREE.TextureLoader().load(IMGPATH + 'milky-way.jpg');
 
+
 var space = new THREE.Mesh(
-  new THREE.SphereGeometry(90, SEGMENTSIZE, SEGMENTSIZE), 
+  new THREE.SphereGeometry(300, SEGMENTSIZE, SEGMENTSIZE), 
   new THREE.MeshStandardMaterial({
     map: spaceTexture,
     side: THREE.DoubleSide
@@ -57,22 +57,27 @@ var moon = new THREE.Mesh(
   new THREE.SphereGeometry(1, SEGMENTSIZE, SEGMENTSIZE), 
   new THREE.MeshStandardMaterial({
     map: moonTexture,
-    normalMap: moonNormalTexture
+    bumpMap: moonNormalTexture
   })
 )
 
 // EARTH
 var earthTexture = new THREE.TextureLoader().load(IMGPATH + 'earth.jpg');
-var earthMaterial = new THREE.MeshPhongMaterial({map: earthTexture});
+var earthBumpTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-bump.jpg');
+var earthSpecTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-specular.jpg');
 
 var earthCloudsTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-clouds.jpg');
 var earthCloudsMaterial = new THREE.MeshDepthMaterial({map: earthCloudsTexture});
 
-var earthNormalTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-normal.jpg');
-
 var earth = new THREE.Mesh(
   new THREE.SphereGeometry(4, SEGMENTSIZE, SEGMENTSIZE),
-  earthMaterial
+  new THREE.MeshPhongMaterial({
+    map: earthTexture, 
+    bumpMap: earthBumpTexture,
+    bumpScale: 0.05,
+    specularMap: earthSpecTexture,
+    specular: new THREE.Color('grey')
+  })
 )
 
 moon.position.set(10,10,10);
