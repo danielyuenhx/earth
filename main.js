@@ -9,18 +9,6 @@ const SEGMENTSIZE = 32;
 
 var debug = true;
 
-if (debug) {
-  // like a floodlight, no need position
-  var ambientLight = new THREE.AmbientLight(0xfae4b9);
-
-  // helper to show where light is coming from
-  var lightHelper1 = new THREE.PointLightHelper(sunLight);
-  var lightHelper2 = new THREE.PointLightHelper(nightLight);
-  // grid for 3d perspective
-  var gridHelper = new THREE.GridHelper(200,50);
-  scene.add(lightHelper1, gridHelper, lightHelper2, ambientLight);
-}
-
 // needs a scene, a camera and a renderer
 // Scene = Container
 var scene = new THREE.Scene();
@@ -124,6 +112,18 @@ scene.add(sunLight,nightLight);
 var controls = new OrbitControls(camera, renderer.domElement);
 
 
+
+if (debug) {
+  // like a floodlight, no need position
+  var ambientLight = new THREE.AmbientLight(0xfae4b9);
+
+  // helper to show where light is coming from
+  var lightHelper1 = new THREE.PointLightHelper(sunLight);
+  var lightHelper2 = new THREE.PointLightHelper(nightLight);
+  // grid for 3d perspective
+  var gridHelper = new THREE.GridHelper(200,50);
+  scene.add(lightHelper1, gridHelper, lightHelper2, ambientLight);
+}
 
 function addStar() {
   var geometry = new THREE.SphereGeometry(0.1, 24, 24);
