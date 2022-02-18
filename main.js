@@ -1,20 +1,21 @@
 import './style.css'
 
 import * as THREE from 'three';
-import { WebGLRenderer } from 'three';
+import { BooleanKeyframeTrack, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import * as POSTPROCESSING from 'postprocessing';
 
 const IMGPATH = './images/';
 const SEGMENTSIZE = 32;
 
-var debug = true;
+var debug = false;
 
 // needs a scene, a camera and a renderer
 // Scene = Container
 var scene = new THREE.Scene();
 
 // Camera = Viewpoint
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 50000);
 
 var renderer = new THREE.WebGLRenderer({
   canvas: document.getElementById('bg'),
@@ -22,9 +23,10 @@ var renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(10);
+camera.position.setX(-7.5);
+camera.position.setZ(-15);
 
-renderer.render(scene, camera);
+// renderer.render(scene, camera);
 
 
 // // TORUS
@@ -90,8 +92,8 @@ var clouds = new THREE.Mesh(
   })
 );
 
-earth.position.set(6,0,-3);
-clouds.position.set(6,0,-3);
+earth.position.set(-5,0,-2);
+clouds.position.set(-5,0,-2);
 
 scene.add(space, moon, earth, clouds);
 
@@ -99,14 +101,44 @@ scene.add(space, moon, earth, clouds);
 
 
 // SUN
-var sunLight = new THREE.DirectionalLight(0xfae4b9, 3);
-sunLight.position.set(-5,0,-1);
+var sunLight = new THREE.DirectionalLight(0xFFFFB1, 2.5);
+sunLight.position.set(-30,0,-37);
 
-var nightLight = new THREE.DirectionalLight(0xfae4b9, 0.3);
+var nightLight = new THREE.DirectionalLight(0xFFFFB1, 0.2);
 nightLight.position.set(-5,0,10);
 nightLight.castShadow = true;
 
-scene.add(sunLight,nightLight);
+var sunTexture = new THREE.TextureLoader().load(IMGPATH + 'sun.jpg');
+
+var sun = new THREE.Mesh(
+  new THREE.SphereGeometry(25, SEGMENTSIZE, SEGMENTSIZE),
+  new THREE.MeshBasicMaterial({
+    map: sunTexture,
+  })
+  // new THREE.MeshBasicMaterial({color: 0xffccaa})
+);
+
+sun.scale.setX(1.1);
+sun.position.set(-75,0,-50);
+
+scene.add(sun, sunLight, nightLight);
+
+let godraysEffect = new POSTPROCESSING.GodRaysEffect(camera, sun, {
+  resolutionScale: 1,
+  density: 0.8,
+  decay: 0.95,
+  weight: 0.9,
+  samples: 100,
+  exposure: 0.25
+});
+
+let renderPass = new POSTPROCESSING.RenderPass(scene, camera);
+let effectPass = new POSTPROCESSING.EffectPass(camera,godraysEffect);
+effectPass.renderToScreen = true;
+
+let composer = new POSTPROCESSING.EffectComposer(renderer);
+composer.addPass(renderPass);
+composer.addPass(effectPass);
 
 // listen to dom events on the mouse and update camera position
 var controls = new OrbitControls(camera, renderer.domElement);
@@ -122,7 +154,7 @@ if (debug) {
   var lightHelper2 = new THREE.PointLightHelper(nightLight);
   // grid for 3d perspective
   var gridHelper = new THREE.GridHelper(200,50);
-  scene.add(lightHelper1, gridHelper, lightHelper2, ambientLight);
+  scene.add(lightHelper1, gridHelper, lightHelper2);
 }
 
 function addStar() {
@@ -163,13 +195,17 @@ function animate() {
   // torus.rotation.z += 0.01;
 
   moon.rotation.y += 0.0005;
-  earth.rotation.y += 0.0002;
-  clouds.rotation.y += 0.0004;
+  earth.rotation.y += 0.0005;
+  clouds.rotation.y += 0.0015;
+  sun.rotation.y += 0.0005;
+
+  // earth.position.x += 0.001;
 
   // allow to update perspective control
   controls.update();
 
-  renderer.render(scene,camera);
+  composer.render(0.1);
+  // renderer.render(scene,camera);
 }
 
 animate();
