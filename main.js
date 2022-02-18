@@ -1,6 +1,8 @@
 import './style.css'
 
 import * as THREE from 'three';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { BooleanKeyframeTrack, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as POSTPROCESSING from 'postprocessing';
@@ -103,8 +105,6 @@ clouds.position.set(-5,0,-2);
 scene.add(space, moon, earth, clouds);
 
 
-
-
 // SUN
 var sunLight = new THREE.DirectionalLight(0xFFFFB1, 2);
 sunLight.position.set(-50,0,-37);
@@ -146,8 +146,33 @@ let composer = new POSTPROCESSING.EffectComposer(renderer);
 composer.addPass(renderPass);
 composer.addPass(effectPass);
 
+
+// TEXT
+var loader = new FontLoader();
+loader.load('./fonts/Bianca_Clarinda_Regular.json', function (font) {
+  var textGeometry = new TextGeometry('test', {
+    font: font,
+    size: 4,
+    height: 2,
+  });
+
+  var text = new THREE.Mesh(
+    textGeometry, 
+    new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+    })
+  );
+
+  scene.add(text);
+  text.position.set(3,-1,-10);
+  text.rotateY(320);
+});   
+
+
+
 // listen to dom events on the mouse and update camera position
 var controls = new OrbitControls(camera, renderer.domElement);
+controls.rotateSpeed = 0.1;
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.minDistance = 10;
@@ -192,7 +217,7 @@ for (let i=0; i<50; i++) {
 // moon orbit stuff
 var r = 20;
 var theta = 0;
-var dTheta = Math.PI / 1000;
+var dTheta = 0.75 * Math.PI / 1000;
 
 // need to render again to see object
 // instead of calling over and over again, set up infinite loop
