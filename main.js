@@ -20,6 +20,8 @@ var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeigh
 var renderer = new THREE.WebGLRenderer({
   canvas: document.getElementById('bg'),
 })
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -44,7 +46,7 @@ camera.position.setZ(-15);
 var spaceTexture = new THREE.TextureLoader().load(IMGPATH + 'milky-way.jpg');
 
 var space = new THREE.Mesh(
-  new THREE.SphereGeometry(300, SEGMENTSIZE, SEGMENTSIZE), 
+  new THREE.SphereGeometry(1000, SEGMENTSIZE, SEGMENTSIZE), 
   new THREE.MeshStandardMaterial({
     map: spaceTexture,
     side: THREE.DoubleSide
@@ -63,8 +65,10 @@ var moon = new THREE.Mesh(
     normalMap: moonNormalTexture
   })
 )
+moon.castShadow = true; 
+moon.receiveShadow = true; 
 
-moon.position.set(10,10,10);
+moon.position.set(-5,0,-2);
 
 // EARTH
 var earthTexture = new THREE.TextureLoader().load(IMGPATH + 'earth.jpg');
@@ -81,6 +85,8 @@ var earth = new THREE.Mesh(
     specular: new THREE.Color('grey')
   })
 )
+earth.castShadow = true; 
+earth.receiveShadow = true; 
 
 var cloudsTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-clouds.png');
 var clouds = new THREE.Mesh(
@@ -101,7 +107,8 @@ scene.add(space, moon, earth, clouds);
 
 // SUN
 var sunLight = new THREE.DirectionalLight(0xFFFFB1, 2);
-sunLight.position.set(-30,0,-37);
+sunLight.position.set(-50,0,-37);
+sunLight.castShadow = true;
 
 var nightLight = new THREE.DirectionalLight(0xFFFFB1, 0.2);
 nightLight.position.set(-5,0,10);
@@ -182,6 +189,10 @@ for (let i=0; i<50; i++) {
 // scene.background = spaceTexture;
 
 
+// moon orbit stuff
+var r = 20;
+var theta = 0;
+var dTheta = Math.PI / 1000;
 
 // need to render again to see object
 // instead of calling over and over again, set up infinite loop
@@ -201,6 +212,12 @@ function animate() {
   earth.rotation.y += 0.0005;
   clouds.rotation.y += 0.0015;
   sun.rotation.y += 0.0005;
+
+  //Increment theta, and update moon x and y
+  //position based off new theta value        
+  theta += dTheta;
+  moon.position.x = r * Math.cos(theta);
+  moon.position.z = r * Math.sin(theta);
 
   // earth.position.x += 0.001;
 
