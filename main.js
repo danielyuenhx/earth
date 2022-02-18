@@ -141,7 +141,7 @@ composer.addPass(renderPass);
 composer.addPass(effectPass);
 
 // listen to dom events on the mouse and update camera position
-var controls = new OrbitControls(camera, renderer.domElement);
+// var controls = new OrbitControls(camera, renderer.domElement);
 
 
 
