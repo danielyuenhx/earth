@@ -7,6 +7,20 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 const IMGPATH = './images/';
 const SEGMENTSIZE = 32;
 
+var debug = true;
+
+if (debug) {
+  // like a floodlight, no need position
+  var ambientLight = new THREE.AmbientLight(0xfae4b9);
+
+  // helper to show where light is coming from
+  var lightHelper1 = new THREE.PointLightHelper(sunLight);
+  var lightHelper2 = new THREE.PointLightHelper(nightLight);
+  // grid for 3d perspective
+  var gridHelper = new THREE.GridHelper(200,50);
+  scene.add(lightHelper1, gridHelper, lightHelper2, ambientLight);
+}
+
 // needs a scene, a camera and a renderer
 // Scene = Container
 var scene = new THREE.Scene();
@@ -20,7 +34,7 @@ var renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(30);
+camera.position.setZ(10);
 
 renderer.render(scene, camera);
 
@@ -57,7 +71,7 @@ var moon = new THREE.Mesh(
   new THREE.SphereGeometry(1, SEGMENTSIZE, SEGMENTSIZE), 
   new THREE.MeshStandardMaterial({
     map: moonTexture,
-    bumpMap: moonNormalTexture
+    normalMap: moonNormalTexture
   })
 )
 
@@ -70,7 +84,7 @@ var earthSpecTexture = new THREE.TextureLoader().load(IMGPATH + 'earth-specular.
 
 var earth = new THREE.Mesh(
   new THREE.SphereGeometry(4, SEGMENTSIZE, SEGMENTSIZE),
-  new THREE.MeshPhongMaterial({
+  new THREE.MeshStandardMaterial({
     map: earthTexture, 
     bumpMap: earthBumpTexture,
     bumpScale: 0.05,
@@ -88,24 +102,23 @@ var clouds = new THREE.Mesh(
   })
 );
 
+earth.position.set(6,0,-3);
+clouds.position.set(6,0,-3);
+
 scene.add(space, moon, earth, clouds);
 
 
 
 
-// like a lightbulb
-var pointLight = new THREE.PointLight(0xffffff);
-pointLight.position.set(5,5,5);
+// SUN
+var sunLight = new THREE.DirectionalLight(0xfae4b9, 3);
+sunLight.position.set(-5,0,-1);
 
-// like a floodlight, no need position
-var ambientLight = new THREE.AmbientLight(0xffffff);
-scene.add(pointLight, ambientLight);
+var nightLight = new THREE.DirectionalLight(0xfae4b9, 0.3);
+nightLight.position.set(-5,0,10);
+nightLight.castShadow = true;
 
-// helper to show where light is coming from
-var lightHelper = new THREE.PointLightHelper(pointLight);
-// grid for 3d perspective
-var gridHelper = new THREE.GridHelper(200,50);
-// scene.add(lightHelper, gridHelper);
+scene.add(sunLight,nightLight);
 
 // listen to dom events on the mouse and update camera position
 var controls = new OrbitControls(camera, renderer.domElement);
@@ -118,7 +131,7 @@ function addStar() {
   var star = new THREE.Mesh(geometry, material);
 
   // generates number between -100 to 100
-  var [x,y,z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(150));
+  var [x,y,z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100));
 
   star.position.set(x,y,z);
   scene.add(star);
@@ -149,9 +162,9 @@ function animate() {
   // torus.rotation.y += 0.005;
   // torus.rotation.z += 0.01;
 
-  moon.rotation.y += 0.001;
-  earth.rotation.y += 0.001;
-  clouds.rotation.y += 0.0005;
+  moon.rotation.y += 0.0005;
+  earth.rotation.y += 0.0002;
+  clouds.rotation.y += 0.0004;
 
   // allow to update perspective control
   controls.update();
