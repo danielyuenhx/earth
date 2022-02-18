@@ -43,7 +43,6 @@ camera.position.setZ(-15);
 // SPACE
 var spaceTexture = new THREE.TextureLoader().load(IMGPATH + 'milky-way.jpg');
 
-
 var space = new THREE.Mesh(
   new THREE.SphereGeometry(300, SEGMENTSIZE, SEGMENTSIZE), 
   new THREE.MeshStandardMaterial({
@@ -194,6 +193,7 @@ function animate() {
   // torus.rotation.y += 0.005;
   // torus.rotation.z += 0.01;
 
+  space.rotation.y += 0.0001;
   moon.rotation.y += 0.0005;
   earth.rotation.y += 0.0005;
   clouds.rotation.y += 0.0015;
