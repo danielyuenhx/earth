@@ -100,7 +100,7 @@ scene.add(space, moon, earth, clouds);
 
 
 // SUN
-var sunLight = new THREE.DirectionalLight(0xFFFFB1, 2.5);
+var sunLight = new THREE.DirectionalLight(0xFFFFB1, 2);
 sunLight.position.set(-30,0,-37);
 
 var nightLight = new THREE.DirectionalLight(0xFFFFB1, 0.2);
@@ -141,7 +141,10 @@ composer.addPass(effectPass);
 
 // listen to dom events on the mouse and update camera position
 var controls = new OrbitControls(camera, renderer.domElement);
-
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.minDistance = 10;
+controls.maxDistance = 20;
 
 
 if (debug) {
