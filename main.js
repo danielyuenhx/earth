@@ -17,7 +17,7 @@ var debug = false;
 var scene = new THREE.Scene();
 
 // Camera = Viewpoint
-var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 50000);
+var camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight, 0.1, 5000);
 
 var renderer = new THREE.WebGLRenderer({
   canvas: document.getElementById('bg'),
@@ -27,8 +27,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setX(-7.5);
-camera.position.setZ(-15);
+camera.position.setX(-10.5);
+camera.position.setZ(-18);
 
 // renderer.render(scene, camera);
 
@@ -99,8 +99,8 @@ var clouds = new THREE.Mesh(
   })
 );
 
-earth.position.set(-5,0,-2);
-clouds.position.set(-5,0,-2);
+earth.position.set(-6,0,-2);
+clouds.position.set(-6,0,-2);
 
 scene.add(space, moon, earth, clouds);
 
@@ -149,11 +149,11 @@ composer.addPass(effectPass);
 
 // TEXT
 var loader = new FontLoader();
-loader.load('./fonts/Bianca_Clarinda_Regular.json', function (font) {
-  var textGeometry = new TextGeometry('test', {
+loader.load('./fonts/Open_Sans_Bold.json', function (font) {
+  var textGeometry = new TextGeometry('Hi!\nWelcome to my\nfirst three.js project.\nClick and drag with\nthe mouse to look around.\nScroll to zoom!', {
     font: font,
-    size: 4,
-    height: 2,
+    size: 0.3,
+    height: 0.1,
   });
 
   var text = new THREE.Mesh(
@@ -164,8 +164,9 @@ loader.load('./fonts/Bianca_Clarinda_Regular.json', function (font) {
   );
 
   scene.add(text);
-  text.position.set(3,-1,-10);
-  text.rotateY(320);
+  text.position.set(0,1.5,-12);
+  // text.rotation.x = (-5 * Math.PI/180);
+  text.rotation.y = (230 * Math.PI/180);
 });   
 
 
@@ -175,8 +176,8 @@ var controls = new OrbitControls(camera, renderer.domElement);
 controls.rotateSpeed = 0.1;
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.minDistance = 10;
-controls.maxDistance = 20;
+controls.minDistance = 12;
+controls.maxDistance = 40;
 
 
 if (debug) {
@@ -216,7 +217,7 @@ for (let i=0; i<50; i++) {
 
 // moon orbit stuff
 var r = 20;
-var theta = 0;
+var theta = 1.9;
 var dTheta = 0.75 * Math.PI / 1000;
 
 // need to render again to see object
