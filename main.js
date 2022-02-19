@@ -7,7 +7,7 @@ import { BooleanKeyframeTrack, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as POSTPROCESSING from 'postprocessing';
 
-const IMGPATH = './images/';
+const IMGPATH = 'images/';
 const SEGMENTSIZE = 32;
 
 var debug = false;
@@ -149,7 +149,7 @@ composer.addPass(effectPass);
 
 // TEXT
 var loader = new FontLoader();
-loader.load('./fonts/Open_Sans_Bold.json', function (font) {
+loader.load('fonts/Open_Sans_Bold.json', function (font) {
   var textGeometry = new TextGeometry('Hi!\nWelcome to my\nfirst three.js project.\nClick and drag with\nthe mouse to look around.\nScroll to zoom!', {
     font: font,
     size: 0.3,
