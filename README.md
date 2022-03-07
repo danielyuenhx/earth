@@ -1,13 +1,14 @@
 # Earth 
-First three-js project. 
+Three.js project built using Vite.\
 
-Demo: https://danielyuenhx.github.io/earth/
+Demo at: https://danielyuenhx.github.io/earth/
 
-### Running the project
+## Instructions
+Navigate to the directory and run preview using Vite as shown below:
 ```
-npm install
-npm run build
-npm run preview
+$ npm install
+$ npm run build
+$ npm run preview
 ```
 
-View at `http://localhost:4173`
+View at `http://localhost:4173`.
