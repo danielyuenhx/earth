@@ -1,5 +1,5 @@
 # Earth 
-Three.js project built using Vite.\
+Three.js project built using Vite.
 
 Demo at: https://danielyuenhx.github.io/earth/
 
